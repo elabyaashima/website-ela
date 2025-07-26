@@ -52,5 +52,9 @@ app.get('/', (req, res) => {
     res.send("API Working");
 });
 
+app.get('/hello', (req, res) => {
+    res.send("ok");
+});
+
 // Start the Server
 app.listen(port, () => console.log(`Server started on PORT: ${port}`));

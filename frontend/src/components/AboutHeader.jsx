@@ -54,9 +54,9 @@ const AboutUsSection = () => {
           </div>
 
           <img
-            src={headerImage}
+            src="https://res.cloudinary.com/ddn14rili/image/upload/v1753537514/founders-page1_sp2a4j.jpg"
             alt="We Are ELA"
-            className="rounded-lg shadow-lg w-full md:w-auto max-w-sm object-cover"
+            className="rounded-lg shadow-lg w-full h-3/4 md:w-auto max-w-sm object-cover"
           />
         </motion.div>
 
@@ -143,7 +143,7 @@ const AboutUsSection = () => {
 <section className="py-12 bg-white">
   <div className="max-w-screen-xl w-full mx-auto px-4 flex flex-col md:flex-row items-center gap-10">
     <motion.img
-      src={founderImage}
+      src="https://res.cloudinary.com/ddn14rili/image/upload/v1753537763/founder1_zgx9f6.jpg"
       alt="Founder"
       className="w-72 sm:w-80 rounded-2xl shadow-lg object-cover"
       initial={{ x: -100, opacity: 0 }}
@@ -220,7 +220,7 @@ const AboutUsSection = () => {
 
     {/* Founder Image */}
     <motion.img
-      src={founderImage}
+      src="https://res.cloudinary.com/ddn14rili/image/upload/v1753537859/founder2_yjwu16.jpg"
       alt="Founder"
       className="w-72 sm:w-80 rounded-2xl shadow-lg object-cover"
       initial={{ x: -100, opacity: 0 }}
