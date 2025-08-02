@@ -61,7 +61,7 @@ const Product = () => {
           </div> */}
           <p className='mt-5 text-3xl font-medium'>{currency}{productData.price}</p>
           <p className='text-xl text-gray-400 font-medium'><del>{currency}{productData.price+productData.price*0.3}</del></p>
-          <p className=' text-xl text-gray-400 font-medium'><del>{currency}{productData.price+productData.price*0.3}</del></p>
+{/*           <p className=' text-xl text-gray-400 font-medium'><del>{currency}{productData.price+productData.price*0.3}</del></p> */}
           <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
 
           {/* Removed size selection here */}
