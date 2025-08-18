@@ -7,7 +7,7 @@ import crypto from "crypto";
 
 // Global variables
 const currency = 'inr';
-const deliveryCharge = 10;
+const deliveryCharge = 0;
 
 // Gateway initialize
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
