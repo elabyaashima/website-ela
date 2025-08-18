@@ -3,6 +3,7 @@ import userModel from "../models/userModel.js";
 import Stripe from 'stripe';
 import razorpay from 'razorpay';
 import { reduceStock } from './productController.js';  // Import reduceStock function from productController.js
+import crypto from "crypto";
 
 // Global variables
 const currency = 'inr';
@@ -155,12 +156,15 @@ const placeOrderRazorpay = async (req, res) => {
             currency: currency.toUpperCase(),
             receipt: newOrder._id.toString(),
         };
+        console.log("payment started");
 
         await razorpayInstance.orders.create(options, async (error, order) => {
             if (error) {
                 console.log(error);
                 return res.json({ success: false, message: error });
             }
+
+            console.log("payment entered");
 
             res.json({ success: true, order });
 
@@ -174,28 +178,35 @@ const placeOrderRazorpay = async (req, res) => {
 
 const verifyRazorpay = async (req, res) => {
     try {
-        const { userId, razorpay_order_id } = req.body;
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature, userId } = req.body;
 
-        const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
-        if (orderInfo.status === 'paid') {
-            await orderModel.findByIdAndUpdate(orderInfo.receipt, { payment: true });
+        const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
+        hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
+        const generatedSignature = hmac.digest("hex");
+
+        if (generatedSignature === razorpay_signature) {
+            // Find DB order using receipt (stored in Razorpay order)
+            const razorpayOrder = await razorpayInstance.orders.fetch(razorpay_order_id);
+            const orderId = razorpayOrder.receipt;
+
+            await orderModel.findByIdAndUpdate(orderId, { payment: true });
             await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-            // Reduce stock after successful payment
-            const order = await orderModel.findById(orderInfo.receipt);
+            const order = await orderModel.findById(orderId);
             for (const item of order.items) {
                 await reduceStock(item.productId, item.quantity);
             }
 
-            res.json({ success: true, message: "Payment Successful" });
+            return res.json({ success: true, message: "Payment Verified" });
         } else {
-            res.json({ success: false, message: 'Payment Failed' });
+            return res.json({ success: false, message: "Invalid Signature" });
         }
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });
     }
 };
+
 
 // All Orders data for Admin Panel
 const allOrders = async (req, res) => {
